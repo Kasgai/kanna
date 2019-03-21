@@ -1,0 +1,7 @@
+<xml xmlns="http://www.w3.org/1999/xhtml" id="toolbox" style="display: none;">
+  <category name="base" colour="#a55b5b">
+    <block type="start"></block>
+    <block type="condition"></block>
+    <block type="target"></block>
+  </category>
+</xml>

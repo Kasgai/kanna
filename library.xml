@@ -1,0 +1,143 @@
+<xml xmlns="http://www.w3.org/1999/xhtml"><block type="factory_base" id="B5sobyX(R+UH$/Kr;9^U" deletable="false" movable="false" x="10" y="10">
+    <mutation connections="BOTTOM"></mutation>
+    <field name="NAME">start</field>
+    <field name="INLINE">AUTO</field>
+    <field name="CONNECTIONS">BOTTOM</field>
+    <statement name="INPUTS">
+      <block type="input_dummy" id="S=Y*eOXjPYM1Sd.U`LkG">
+        <field name="ALIGN">LEFT</field>
+        <statement name="FIELDS">
+          <block type="field_static" id="h1%gNMY*sXJZ:BSGAO}C">
+            <field name="TEXT">スタート</field>
+          </block>
+        </statement>
+      </block>
+    </statement>
+    <value name="TOOLTIP">
+      <block type="text" id="!1~J^}:6NU-%(P.km+4V" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="HELPURL">
+      <block type="text" id="D$]f);CZ}[gOM}D)16t?" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="BOTTOMTYPE">
+      <shadow type="type_null" id="F1#yp%[ot8tjS]lFCEGE"></shadow>
+    </value>
+    <value name="COLOUR">
+      <block type="colour_hue" id="d%eJzpb[4$`YQJq@S78x">
+        <mutation colour="#5b93a5"></mutation>
+        <field name="HUE">195</field>
+      </block>
+    </value>
+  </block><block type="factory_base" id="2C*)E|[@?bb3w20bW$3j" deletable="false" movable="false" x="10" y="10">
+    <mutation connections="TOP"></mutation>
+    <field name="NAME">condition</field>
+    <field name="INLINE">AUTO</field>
+    <field name="CONNECTIONS">TOP</field>
+    <statement name="INPUTS">
+      <block type="input_dummy" id="gwZlP{N*!Vyvfe[h]jow">
+        <field name="ALIGN">LEFT</field>
+        <statement name="FIELDS">
+          <block type="field_static" id="MMvVP[IH]Mh_N;%dGH3W">
+            <field name="TEXT">条件</field>
+            <next>
+              <block type="field_input" id="WzK=i^Xh.Xc~y#Z7(.(s">
+                <field name="TEXT">3つの辺がある</field>
+                <field name="FIELDNAME">condition_name</field>
+              </block>
+            </next>
+          </block>
+        </statement>
+        <next>
+          <block type="input_statement" id="F[/huhCguxb@P#:0PBO1">
+            <field name="INPUTNAME">yes</field>
+            <field name="ALIGN">LEFT</field>
+            <statement name="FIELDS">
+              <block type="field_static" id="/Rt4S#m}9Z*ic!U!S)KQ">
+                <field name="TEXT">はい</field>
+              </block>
+            </statement>
+            <value name="TYPE">
+              <shadow type="type_null" id="cv4Su/ztOVztHmgEa{]p"></shadow>
+            </value>
+            <next>
+              <block type="input_statement" id="NAE%4`#e~HYIFNChvr5G">
+                <field name="INPUTNAME">no</field>
+                <field name="ALIGN">LEFT</field>
+                <statement name="FIELDS">
+                  <block type="field_static" id="TVqE:7TPGadBSVr?o4Qh">
+                    <field name="TEXT">いいえ</field>
+                  </block>
+                </statement>
+                <value name="TYPE">
+                  <shadow type="type_null" id="5(wR~F`DKFMFZ`Xm|s[,"></shadow>
+                </value>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+    <value name="TOOLTIP">
+      <block type="text" id="CLlHGk@unp$E0qOWTC6." deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="HELPURL">
+      <block type="text" id="bhc/UJphKRVX.s%P4(lK" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="TOPTYPE">
+      <shadow type="type_null" id="6sSxW}!SxP=D1o,Eu[x$"></shadow>
+    </value>
+    <value name="COLOUR">
+      <block type="colour_hue" id="mH}wOGJoEzk]yah`%D12">
+        <mutation colour="#a55ba5"></mutation>
+        <field name="HUE">300</field>
+      </block>
+    </value>
+  </block><block type="factory_base" id="g-#,.i@SmwafyXPxfh55" deletable="false" movable="false" x="10" y="10">
+    <mutation connections="TOP"></mutation>
+    <field name="NAME">target</field>
+    <field name="INLINE">AUTO</field>
+    <field name="CONNECTIONS">TOP</field>
+    <statement name="INPUTS">
+      <block type="input_dummy" id="Oz2H3~[hd9YC4:KZ*LXn">
+        <field name="ALIGN">LEFT</field>
+        <statement name="FIELDS">
+          <block type="field_static" id="rXd+H.9KvreYs,3E-92H">
+            <field name="TEXT">結果</field>
+            <next>
+              <block type="field_input" id="E.MT[Pse3Rg[Q12(HBQB">
+                <field name="TEXT">三角形</field>
+                <field name="FIELDNAME">target_name</field>
+              </block>
+            </next>
+          </block>
+        </statement>
+      </block>
+    </statement>
+    <value name="TOOLTIP">
+      <block type="text" id="mwmW:p(]`!nm#,%j!vz?" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="HELPURL">
+      <block type="text" id="ktC8k,~S7Nh=I//+uHhF" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="TOPTYPE">
+      <shadow type="type_null" id=")M$xAVlWwVUfpidMDZ!@"></shadow>
+    </value>
+    <value name="COLOUR">
+      <block type="colour_hue" id="oNzq)Hsac[=v_;tKU!K2">
+        <mutation colour="#5ba56d"></mutation>
+        <field name="HUE">135</field>
+      </block>
+    </value>
+  </block></xml>
