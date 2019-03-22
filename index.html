@@ -4,6 +4,19 @@
     <meta charset="UTF-8" />
     <title>kanna</title>
     <link href="index.css" rel="stylesheet" />
+	  <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase-app.js"></script>
+	  <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase-database.js"></script>
+	  <script>
+		 const config = {
+			   apiKey: "AIzaSyDozEEmAxyqJU3avAdW_KBommb4HGR5nRk",
+			   authDomain: "kasgai.firebaseapp.com",
+			   databaseURL: "https://kasgai.firebaseio.com",
+			   projectId: "kasgai",
+			   storageBucket: "kasgai.appspot.com",
+			   messagingSenderId: "143262592214"
+		 };
+		 firebase.initializeApp(config);
+	  </script>
     <script src="blockly/blockly_compressed.js"></script>
     <script src="blockly/blocks_compressed.js"></script>
     <script src="blockly/msg/js/ja.js"></script>

@@ -11,17 +11,8 @@ const loadXml = url => {
 
 const makeWorkspace = toolbox => {
   const blocklyArea = document.getElementById("blocklyArea");
-
   workspace = Blockly.inject(blocklyArea, makeOption(toolbox));
   Blockly.svgResize(workspace);
-
-  const updateWorkspace = () => {
-    const xml = Blockly.Xml.workspaceToDom(workspace);
-    const xmlText = Blockly.Xml.domToText(xml);
-    console.log(xmlText);
-  };
-
-  workspace.addChangeListener(updateWorkspace);
 };
 
 const makeOption = toolbox => {
@@ -62,31 +53,27 @@ const parse = json => {
   return targetBlock(json.link);
 };
 
-const initBlock = () => {
-  const inputExample = {
-    link: 1,
-    isCondition: true,
-    yes: {
-      link: 2,
-      isCondition: false
-    },
-    no: {
-      link: 3,
-      isCondition: true,
-      yes: {
-        link: 4,
-        isCondition: false
-      },
-      no: {
-        link: 5,
-        isCondition: false
-      }
-    }
-  };
-
-  const xmlText = startBlock(parse(inputExample));
+const initBlock = block => {
+  const xmlText = startBlock(parse(block));
   const xml = Blockly.Xml.textToDom(xmlText);
   Blockly.Xml.domToWorkspace(xml, workspace);
+};
+
+const getProject = projectId => {
+  if (projectId == null) {
+    throw new Error("invalid project id");
+    return;
+  }
+  const db = firebase.database();
+  const projectDatabase = db.ref(`/kanna-projects/${projectId}`);
+  projectDatabase.on("value", snapshot => {
+    const yattoko = snapshot.val()["yattoko"];
+    if (yattoko == null) {
+      alert(`yattoko project was not found. projectId: ${projectId}`);
+      return;
+    }
+    initBlock(yattoko);
+  });
 };
 
 (async () => {
@@ -96,5 +83,7 @@ const initBlock = () => {
 
   const htmlToolbox = result[0];
   makeWorkspace(htmlToolbox);
-  initBlock();
+
+  const projectId = window.location.search.replace(/\?id=/, "");
+  getProject(projectId);
 })();
