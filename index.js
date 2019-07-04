@@ -46,8 +46,8 @@ const targetBlock = text => {
 
 const parse = json => {
   if (json.isCondition) {
-    const yesBlock = parse(json.yes);
-    const noBlock = parse(json.no);
+    const yesBlock = json.hasOwnProperty("yes") ? parse(json.yes) : {};
+    const noBlock = json.hasOwnProperty("no") ? parse(json.no) : {};
     return conditionBlock(json.link, yesBlock, noBlock);
   }
   return targetBlock(json.link);
@@ -65,14 +65,14 @@ const getProject = projectId => {
     return;
   }
   const db = firebase.database();
-  const projectDatabase = db.ref(`/kanna-projects/${projectId}`);
+  const projectDatabase = db.ref(`/projects/${projectId}`);
   projectDatabase.on("value", snapshot => {
-    const yattoko = snapshot.val()["yattoko"];
+    const yattoko = snapshot.val()["code"];
     if (yattoko == null) {
       alert(`yattoko project was not found. projectId: ${projectId}`);
       return;
     }
-    initBlock(yattoko);
+    initBlock(JSON.parse(yattoko));
   });
 };
 
