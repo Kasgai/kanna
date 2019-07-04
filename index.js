@@ -77,7 +77,7 @@ const getProject = projectId => {
 };
 
 (async () => {
-  const requestUrl = ["/toolbox.xml"];
+  const requestUrl = ["/kanna/toolbox.xml"];
 
   const result = await Promise.all(requestUrl.map(loadXml));
 
