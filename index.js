@@ -44,17 +44,25 @@ const targetBlock = text => {
   return `<block type="target"><field name="target_name">${text}</field></block>`;
 };
 
-const parse = json => {
+const parse = (json, template) => {
   if (json.isCondition) {
-    const yesBlock = json.hasOwnProperty("yes") ? parse(json.yes) : {};
-    const noBlock = json.hasOwnProperty("no") ? parse(json.no) : {};
-    return conditionBlock(json.link, yesBlock, noBlock);
+    const yesBlock = json.hasOwnProperty("yes")
+      ? parse(json.yes, template)
+      : {};
+    const noBlock = json.hasOwnProperty("no") ? parse(json.no, template) : {};
+    const text =
+      template.conditions.filter(cond => cond.id === json.link)[0].text ||
+      json.link;
+    return conditionBlock(text, yesBlock, noBlock);
   }
-  return targetBlock(json.link);
+  const text =
+    template.targets.filter(t => t.id === json.link)[0].name || json.link;
+
+  return targetBlock(text);
 };
 
-const initBlock = block => {
-  const xmlText = startBlock(parse(block));
+const initBlock = (block, template) => {
+  const xmlText = startBlock(parse(block, template));
   const xml = Blockly.Xml.textToDom(xmlText);
   Blockly.Xml.domToWorkspace(xml, workspace);
 };
@@ -66,13 +74,32 @@ const getProject = projectId => {
   }
   const db = firebase.database();
   const projectDatabase = db.ref(`/projects/${projectId}`);
-  projectDatabase.on("value", snapshot => {
+  projectDatabase.on("value", async snapshot => {
     const yattoko = snapshot.val()["code"];
+    const template = snapshot.val()["template"];
     if (yattoko == null) {
       alert(`yattoko project was not found. projectId: ${projectId}`);
       return;
     }
-    initBlock(JSON.parse(yattoko));
+    const templateObject = await getTemplate(template);
+    initBlock(JSON.parse(yattoko), templateObject);
+  });
+};
+
+const getTemplate = async templateId => {
+  const db = firebase.database();
+  const templateDatabase = db.ref(`/store/${templateId}`);
+  return new Promise((resolve, reject) => {
+    templateDatabase.on("value", snapshot => {
+      try {
+        const conditions = JSON.parse(snapshot.val()["conditions"]);
+        const targets = JSON.parse(snapshot.val()["targets"]);
+        const title = snapshot.val()["title"];
+        resolve({ conditions: conditions, targets: targets, title: title });
+      } catch (error) {
+        reject(error);
+      }
+    });
   });
 };
 
