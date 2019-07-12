@@ -51,12 +51,10 @@ const parse = (json, template) => {
       : {};
     const noBlock = json.hasOwnProperty("no") ? parse(json.no, template) : {};
     const text =
-      template.conditions.filter(cond => cond.id === json.link)[0].text ||
-      json.link;
+      template.conditions.find(cond => cond.id === json.link).text || json.link;
     return conditionBlock(text, yesBlock, noBlock);
   }
-  const text =
-    template.targets.filter(t => t.id === json.link)[0].name || json.link;
+  const text = template.targets.find(t => t.id === json.link).name || json.link;
 
   return targetBlock(text);
 };
