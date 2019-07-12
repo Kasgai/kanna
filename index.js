@@ -92,10 +92,7 @@ const getTemplate = async templateId => {
   return new Promise((resolve, reject) => {
     templateDatabase.on("value", snapshot => {
       try {
-        const conditions = JSON.parse(snapshot.val()["conditions"]);
-        const targets = JSON.parse(snapshot.val()["targets"]);
-        const title = snapshot.val()["title"];
-        resolve({ conditions: conditions, targets: targets, title: title });
+        resolve(snapshot.val());
       } catch (error) {
         reject(error);
       }
