@@ -9,17 +9,26 @@ const loadXml = url => {
     .catch(error => console.error(error));
 };
 
-const makeWorkspace = toolbox => {
+const makeWorkspace = (toolbox, projectId) => {
   const blocklyArea = document.getElementById("blocklyArea");
   workspace = Blockly.inject(blocklyArea, makeOption(toolbox));
   Blockly.svgResize(workspace);
+  const saveWorkspace = projectId => {
+    var code = Generator.workspaceToCode(workspace);
+    if (code === "") {
+      return;
+    }
 
-  const updateWorkspace = () => {
-    const code = Blockly.Xml.workspaceToDom(workspace);
-    // TODO: output as Json.
-    console.log(code);
+    firebase
+      .database()
+      .ref("projects/" + projectId)
+      .update({
+        code: code,
+        datetime: firebase.database.ServerValue.TIMESTAMP
+      });
   };
-  workspace.addChangeListener(updateWorkspace);
+
+  workspace.addChangeListener(saveWorkspace);
 };
 
 const makeOption = toolbox => {
@@ -57,18 +66,16 @@ const parse = (json, template) => {
       ? parse(json.yes, template)
       : {};
     const noBlock = json.hasOwnProperty("no") ? parse(json.no, template) : {};
-    const text =
-      template.conditions.find(cond => cond.id === json.link).text || json.link;
-    return conditionBlock(text, yesBlock, noBlock);
+    return conditionBlock(json.link, yesBlock, noBlock);
   }
-  const text = template.targets.find(t => t.id === json.link).name || json.link;
 
-  return targetBlock(text);
+  return targetBlock(json.link);
 };
 
 const initBlock = (block, template) => {
   const xmlText = startBlock(parse(block, template));
   const xml = Blockly.Xml.textToDom(xmlText);
+  workspace.clear();
   Blockly.Xml.domToWorkspace(xml, workspace);
 };
 
@@ -79,7 +86,7 @@ const getProject = projectId => {
   }
   const db = firebase.database();
   const projectDatabase = db.ref(`/projects/${projectId}`);
-  projectDatabase.on("value", async snapshot => {
+  projectDatabase.once("value", async snapshot => {
     const yattoko = snapshot.val()["code"];
     const template = snapshot.val()["template"];
     if (yattoko == null) {
@@ -88,7 +95,7 @@ const getProject = projectId => {
     }
     const templateObject = await getTemplate(template);
     initSelectFromTemplate(templateObject);
-    initBlock(JSON.parse(yattoko), templateObject);
+    initBlock(JSON.parse(yattoko), templateObject, projectId);
   });
 };
 
@@ -96,7 +103,7 @@ const getTemplate = async templateId => {
   const db = firebase.database();
   const templateDatabase = db.ref(`/store/${templateId}`);
   return new Promise((resolve, reject) => {
-    templateDatabase.on("value", snapshot => {
+    templateDatabase.once("value", snapshot => {
       try {
         resolve(snapshot.val());
       } catch (error) {
@@ -110,10 +117,9 @@ const getTemplate = async templateId => {
   const requestUrl = ["/kanna/toolbox.xml"];
 
   const result = await Promise.all(requestUrl.map(loadXml));
-
-  const htmlToolbox = result[0];
-  makeWorkspace(htmlToolbox);
-
   const projectId = window.location.search.replace(/\?id=/, "");
+  const htmlToolbox = result[0];
+  makeWorkspace(htmlToolbox, projectId);
+
   getProject(projectId);
 })();
