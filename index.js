@@ -13,6 +13,13 @@ const makeWorkspace = toolbox => {
   const blocklyArea = document.getElementById("blocklyArea");
   workspace = Blockly.inject(blocklyArea, makeOption(toolbox));
   Blockly.svgResize(workspace);
+
+  const updateWorkspace = () => {
+    const code = Blockly.Xml.workspaceToDom(workspace);
+    // TODO: output as Json.
+    console.log(code);
+  };
+  workspace.addChangeListener(updateWorkspace);
 };
 
 const makeOption = toolbox => {
@@ -80,6 +87,7 @@ const getProject = projectId => {
       return;
     }
     const templateObject = await getTemplate(template);
+    initSelectFromTemplate(templateObject);
     initBlock(JSON.parse(yattoko), templateObject);
   });
 };
