@@ -1,6 +1,7 @@
 "use strict";
 
 let workspace = null;
+let projectId = null;
 
 const loadXml = url => {
   return fetch(url)
@@ -9,11 +10,11 @@ const loadXml = url => {
     .catch(error => console.error(error));
 };
 
-const makeWorkspace = (toolbox, projectId) => {
+const makeWorkspace = toolbox => {
   const blocklyArea = document.getElementById("blocklyArea");
   workspace = Blockly.inject(blocklyArea, makeOption(toolbox));
   Blockly.svgResize(workspace);
-  const saveWorkspace = projectId => {
+  const saveWorkspace = () => {
     var code = Generator.workspaceToCode(workspace);
     if (code === "") {
       return;
@@ -21,7 +22,7 @@ const makeWorkspace = (toolbox, projectId) => {
 
     firebase
       .database()
-      .ref("projects/" + projectId)
+      .ref(`projects/${projectId}`)
       .update({
         code: code,
         datetime: firebase.database.ServerValue.TIMESTAMP
@@ -79,7 +80,7 @@ const initBlock = (block, template) => {
   Blockly.Xml.domToWorkspace(xml, workspace);
 };
 
-const getProject = projectId => {
+const getProject = () => {
   if (projectId == null) {
     throw new Error("invalid project id");
     return;
@@ -117,9 +118,9 @@ const getTemplate = async templateId => {
   const requestUrl = ["/kanna/toolbox.xml"];
 
   const result = await Promise.all(requestUrl.map(loadXml));
-  const projectId = window.location.search.replace(/\?id=/, "");
+  projectId = window.location.search.replace(/\?id=/, "");
   const htmlToolbox = result[0];
-  makeWorkspace(htmlToolbox, projectId);
+  makeWorkspace(htmlToolbox);
 
-  getProject(projectId);
+  getProject();
 })();
