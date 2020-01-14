@@ -2,6 +2,7 @@
 
 let workspace = null;
 let projectId = null;
+let templateObject = null;
 
 const loadXml = url => {
   return fetch(url)
@@ -94,7 +95,7 @@ const getProject = () => {
       alert(`yattoko project was not found. projectId: ${projectId}`);
       return;
     }
-    const templateObject = await getTemplate(template);
+    templateObject = await getTemplate(template);
     initSelectFromTemplate(templateObject);
     initBlock(JSON.parse(yattoko), templateObject, projectId);
   });
@@ -112,6 +113,103 @@ const getTemplate = async templateId => {
       }
     });
   });
+};
+
+const validate = async () => {
+  const code = JSON.parse(Generator.workspaceToCode(workspace));
+  const isSuccess =
+    validateUseAllBlocks(templateObject, code) &&
+    satisfyConditions(templateObject.targets, code, [], []);
+  validateAnimation(isSuccess);
+};
+
+const validateUseAllBlocks = (template, code) => {
+  const targets = template["targets"];
+  for (const t of targets) {
+    if (!searchTarget(code, t["id"])) {
+      // not using all result blocks
+      return false;
+    }
+  }
+  return true;
+};
+
+const searchTarget = (code, targetId) => {
+  if (code == null) {
+    return false;
+  }
+  if (code.isCondition) {
+    return (
+      searchTarget(code["yes"], targetId) || searchTarget(code["no"], targetId)
+    );
+  }
+
+  // result block
+  return code.link === targetId;
+};
+
+const satisfyConditions = (targets, code, yes, no) => {
+  if (code == null) {
+    return false;
+  }
+
+  if (code.isCondition) {
+    return (
+      satisfyConditions(targets, code["yes"], [...yes, code.link], no) &&
+      satisfyConditions(targets, code["no"], yes, [...no, code.link])
+    );
+  }
+
+  // validate
+  const targetCondition = targets.find(t => t.id == code.link)["condition"];
+  if (targetCondition == null) {
+    throw new Error("cannot find target");
+  }
+  for (const y of yes) {
+    if (!targetCondition[y]) {
+      return false;
+    }
+  }
+  for (const n of no) {
+    if (targetCondition[n]) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+// from yattoko
+const validateAnimation = result => {
+  $("#startButton").animate(
+    { top: -$("#startButton").height(), opacity: 0 },
+    { duration: "normal", easing: "swing" }
+  );
+  $("#validateButtonRope").animate(
+    { top: -$("#startButton").height(), opacity: 0 },
+    "normal",
+    "swing",
+    function() {
+      if (result) {
+        $("#validateResult").attr("src", "../yattoko/asset/succeeded.png");
+      } else {
+        $("#validateResult").attr("src", "../yattoko/asset/failed.png");
+      }
+      $("#validateResult").css({ top: -$("#validateResult").height() });
+      $("#validateResult")
+        .fadeIn("normal")
+        .animate({ top: 70 }, { duration: "normal", easing: "swing" });
+      $("#validateButtonRope").animate(
+        { top: 0, opacity: 100 },
+        { duration: "normal", easing: "swing" }
+      );
+    }
+  );
+};
+
+const unValidated = () => {
+  $("#startButton").css({ top: 70, opacity: 1 });
+  $("#validateResult").hide();
 };
 
 (async () => {
