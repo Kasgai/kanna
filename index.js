@@ -115,7 +115,7 @@ const getTemplate = async templateId => {
   });
 };
 
-const validate = async () => {
+const validate = () => {
   const code = JSON.parse(Generator.workspaceToCode(workspace));
   const isSuccess =
     validateUseAllBlocks(templateObject, code) &&
