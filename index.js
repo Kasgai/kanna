@@ -90,14 +90,12 @@ const getProject = () => {
   const projectDatabase = db.ref(`/projects/${projectId}`);
   projectDatabase.once("value", async snapshot => {
     const yattoko = snapshot.val()["code"];
-    const template = snapshot.val()["template"];
-    if (yattoko == null) {
-      alert(`yattoko project was not found. projectId: ${projectId}`);
-      return;
-    }
+    const template = snapshot.val()["template"] || "-Lghd7w_KIKDqZs64b6L";
     templateObject = await getTemplate(template);
     initSelectFromTemplate(templateObject);
-    initBlock(JSON.parse(yattoko), templateObject, projectId);
+    if (yattoko != null) {
+      initBlock(JSON.parse(yattoko), templateObject, projectId);
+    }
   });
 };
 
