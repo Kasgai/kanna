@@ -25,7 +25,7 @@ const makeWorkspace = toolbox => {
       .database()
       .ref(`projects/${projectId}`)
       .update({
-        code: code,
+        "kanna-code": code,
         datetime: firebase.database.ServerValue.TIMESTAMP
       });
   };
@@ -89,7 +89,7 @@ const getProject = () => {
   const db = firebase.database();
   const projectDatabase = db.ref(`/projects/${projectId}`);
   projectDatabase.once("value", async snapshot => {
-    const yattoko = snapshot.val()["code"];
+    const yattoko = snapshot.val()["kanna-code"];
     const template = snapshot.val()["template"] || "-Lghd7w_KIKDqZs64b6L";
     templateObject = await getTemplate(template);
     initSelectFromTemplate(templateObject);
