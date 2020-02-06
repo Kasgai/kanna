@@ -3,6 +3,7 @@
 let workspace = null;
 let projectId = null;
 let templateObject = null;
+const DEFAULT_TEMPLATE = "-Lghd7w_KIKDqZs64b6L";
 
 const loadXml = url => {
   return fetch(url)
@@ -90,7 +91,13 @@ const getProject = () => {
   const projectDatabase = db.ref(`/projects/${projectId}`);
   projectDatabase.once("value", async snapshot => {
     const yattoko = snapshot.val()["kanna-code"];
-    const template = snapshot.val()["template"] || "-Lghd7w_KIKDqZs64b6L";
+    let template = snapshot.val()["template"];
+    if (template == null) {
+      template = DEFAULT_TEMPLATE;
+      projectDatabase.update({
+        template: template
+      });
+    }
     templateObject = await getTemplate(template);
     initSelectFromTemplate(templateObject);
     if (yattoko != null) {
